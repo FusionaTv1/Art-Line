@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>رفع المحتوى</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #FDF6E2; /* تغيير الخلفية إلى اللون الجديد */
+    }
+    header {
+      background-color: #34495e;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 24px;
+    }
+    .container {
+      padding: 20px;
+    }
+    .category {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 15px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .category:hover {
+      transform: scale(1.05);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+    .modal-content input {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 90%;
+      font-size: 16px;
+    }
+    .modal-content button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .modal-content button:hover {
+      background-color: #2980b9;
+    }
+    .close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+    .loader {
+      border: 8px solid #f3f3f3; /* اللون الخلفي */
+      border-top: 8px solid #3498db; /* اللون الذي يدور */
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .content-item {
+      background: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .content-item button {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .content-item button:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+<header>رفع المحتوى</header>
+<div class="container">
+  <div class="category" onclick="openModal('تهنئة خطوبة')">تهنئة خطوبة</div>
+  <div class="category" onclick="openModal('تهنئة زفاف')">تهنئة زفاف</div>
+  <div class="category" onclick="openModal('تهنئة نسائية')">تهنئة نسائية</div>
+  <div class="category" onclick="openModal('جمعة مباركة')">جمعة مباركة</div>
+  <div class="category" onclick="openModal('بوسترات إعلانية')">بوسترات إعلانية</div>
+  <div class="category" onclick="openModal('تعزية ومواساة')">تعزية ومواساة</div>
+  <div class="category" onclick="openModal('سيرة ذاتية')">سيرة ذاتية</div>
+</div>
+
+<!-- النافذة المنبثقة -->
+<div class="modal" id="uploadModal">
+  <div class="modal-content">
+    <button class="close" onclick="closeModal()">×</button>
+    <h3 id="modalTitle">رفع محتوى</h3>
+    <input type="text" id="contentName" placeholder="اسم المحتوى" />
+    <input type="file" id="imageInput" accept="image/*" />
+    <p>رفع ملف (plp)</p>
+    <input type="file" id="fileInput" accept=".plp" />
+    <button onclick="publishContent()">نشر</button>
+    <div id="loader" class="loader" style="display: none;"></div>
+  </div>
+</div>
+
+<!-- المحتويات المنشورة -->
+<div class="container">
+  <h2>المحتويات المنشورة</h2>
+  <div id="contentList"></div>
+</div>
+
+<script>
+  let currentCategory = '';
+
+  function openModal(category) {
+    currentCategory = category;
+    document.getElementById('modalTitle').innerText = `رفع ${category}`;
+    document.getElementById('uploadModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('uploadModal').style.display = 'none';
+  }
+
+  function readFileAsync(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function publishContent() {
+    const contentName = document.getElementById('contentName').value;
+    const imageInput = document.getElementById('imageInput');
+    const fileInput = document.getElementById('fileInput');
+    const loader = document.getElementById('loader');
+
+    const imageFile = imageInput.files[0];
+    const contentFile = fileInput.files[0];
+
+    const maxFileSize = 30 * 1024 * 1024; // 30MB
+
+    if (contentName && imageFile && contentFile) {
+      if (imageFile.size > maxFileSize || contentFile.size > maxFileSize) {
+        alert('الملف كبير جدًا. يرجى اختيار ملف أصغر (أقصى حجم مسموح به هو 30MB).');
+        return;
+      }
+
+      try {
+        loader.style.display = 'block';
+
+        const imageUrl = await readFileAsync(imageFile);
+        const fileUrl = await readFileAsync(contentFile);
+
+        const content = {
+          name: contentName,
+          category: currentCategory,
+          image: imageUrl,
+          file: fileUrl,
+        };
+
+        const contents = JSON.parse(localStorage.getItem('contents')) || [];
+        contents.push(content);
+        localStorage.setItem('contents', JSON.stringify(contents));
+
+        loader.style.display = 'none';
+        alert(`تم نشر محتوى: ${contentName}`);
+        closeModal();
+        displayContents();
+      } catch (error) {
+        loader.style.display = 'none';
+        alert('حدث خطأ أثناء رفع الملفات. يرجى المحاولة مرة أخرى.');
+        console.error(error);
+      }
+    } else {
+      alert('يرجى إدخال جميع الحقول!');
+    }
+  }
+
+  function displayContents() {
+    const contents = JSON.parse(localStorage.getItem('contents')) || [];
+    const contentList = document.getElementById('contentList');
+    contentList.innerHTML = '';
+    contents.forEach((content, index) => {
+      const contentDiv = document.createElement('div');
+      contentDiv.classList.add('content-item');
+      contentDiv.innerHTML = `
+        <h3>${content.name}</h3>
+        <p>الفئة: ${content.category}</p>
+        <button onclick="editContent(${index})">تعديل</button>
+        <button onclick="deleteContent(${index})">حذف</button>
+      `;
+      contentList.appendChild(contentDiv);
+    });
+  }
+
+  function editContent(index) {
+    const contents = JSON.parse(localStorage.getItem('contents')) || [];
+    const content = contents[index];
+    document.getElementById('contentName').value = content.name;
+    document.getElementById('uploadModal').style.display = 'flex';
+    currentCategory = content.category;
+  }
+
+  function deleteContent(index) {
+    const contents = JSON.parse(localStorage.getItem('contents')) || [];
+    contents.splice(index, 1);
+    localStorage.setItem('contents', JSON.stringify(contents));
+    displayContents();
+  }
+
+  // عرض المحتويات عند تحميل الصفحة
+  displayContents();
+</script>
+
+</body>
+</html>

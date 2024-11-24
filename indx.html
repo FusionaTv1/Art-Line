@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة المحتوى</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #FDF6E2;
+    }
+    header {
+      background-color: #34495e;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 24px;
+    }
+    .container {
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-between;
+    }
+    .content {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      text-align: center;
+      width: 48%;
+      box-sizing: border-box;
+    }
+    .content img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    .message-box {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin: 20px 0;
+    }
+    .message-box textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      resize: none;
+      font-size: 16px;
+    }
+    .send-message-btn {
+      background-color: #3498db;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    .send-message-btn:hover {
+      background-color: #2980b9;
+    }
+
+    /* نافذة إدخال كلمة المرور */
+    .login-modal {
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-modal-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      width: 300px;
+    }
+
+    .login-modal input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .login-modal button {
+      background-color: #3498db;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .login-modal button:hover {
+      background-color: #2980b9;
+    }
+
+    /* إخفاء المحتوى حتى إدخال كلمة المرور الصحيحة */
+    .protected-content {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>إدارة المحتوى</header>
+
+<!-- نافذة إدخال كلمة المرور -->
+<div id="loginModal" class="login-modal">
+  <div class="login-modal-content">
+    <h3>تسجيل الدخول (هذه الخاصية لا يمكن استخدامها إلا من قبل مطوري التطبيق)</h3>
+    <input type="password" id="password" placeholder="أدخل كلمة المرور">
+    <button onclick="checkPassword()">دخول</button>
+  </div>
+</div>
+
+<!-- المحتوى المحمي -->
+<div id="protectedContent" class="protected-content">
+  <!-- خانة إرسال الرسالة -->
+  <div class="message-box">
+    <h3>إرسال رسالة التحديثات أو العروض</h3>
+    <textarea id="updateMessage" placeholder="اكتب رسالتك هنا..."></textarea>
+    <button class="send-message-btn" onclick="sendMessage()">إرسال الرسالة</button>
+  </div>
+
+  <!-- المحتوى -->
+  <div class="container" id="contentContainer"></div>
+</div>
+
+<script>
+  // الدالة للتحقق من كلمة المرور
+  function checkPassword() {
+    const password = document.getElementById('password').value;
+    if (password === '7373113055') {
+      document.getElementById('loginModal').style.display = 'none';  // إخفاء نافذة إدخال كلمة المرور
+      document.getElementById('protectedContent').style.display = 'block';  // إظهار المحتوى
+      renderContents();  // عرض المحتوى بعد تسجيل الدخول
+    } else {
+      alert('كلمة المرور غير صحيحة!');
+    }
+  }
+
+  const contents = JSON.parse(localStorage.getItem('contents')) || [
+    { id: 1, name: 'محتوى 1', category: 'فئة 1', image: 'image1.jpg', file: 'file1.plp' },
+    { id: 2, name: 'محتوى 2', category: 'فئة 2', image: 'image2.jpg', file: 'file2.plp' },
+    { id: 3, name: 'محتوى 3', category: 'فئة 3', image: 'image3.jpg', file: 'file3.plp' },
+    { id: 4, name: 'محتوى 4', category: 'فئة 4', image: 'image4.jpg', file: 'file4.plp' },
+    { id: 5, name: 'محتوى 5', category: 'فئة 5', image: 'image5.jpg', file: 'file5.plp' },
+    { id: 6, name: 'محتوى 6', category: 'فئة 6', image: 'image6.jpg', file: 'file6.plp' }
+  ];
+
+  const container = document.getElementById('contentContainer');
+  const updateMessageInput = document.getElementById('updateMessage');
+
+  function renderContents() {
+    container.innerHTML = '';  // مسح المحتوى القديم
+    contents.forEach((content) => {
+      const contentDiv = document.createElement('div');
+      contentDiv.classList.add('content');
+      contentDiv.innerHTML = `
+        <h3>${content.name} - ${content.category}</h3>
+        <img src="${content.image}" alt="${content.name}" />
+        <div>
+          <button class="edit-btn" onclick="editContent(${content.id})">تعديل</button>
+          <button class="delete-btn" onclick="deleteContent(${content.id})">حذف</button>
+        </div>
+      `;
+      container.appendChild(contentDiv);
+    });
+  }
+
+  function sendMessage() {
+    const message = updateMessageInput.value.trim();
+    if (message) {
+      // تخزين الرسالة في localStorage
+      const messages = JSON.parse(localStorage.getItem('messages')) || [];
+      const newMessage = { id: Date.now(), message: message };
+      messages.push(newMessage);
+      localStorage.setItem('messages', JSON.stringify(messages));
+
+      alert('تم إرسال الرسالة بنجاح!');
+      updateMessageInput.value = '';  // مسح الحقل بعد الإرسال
+    } else {
+      alert('يرجى إدخال رسالة قبل الإرسال.');
+    }
+  }
+
+  function editContent(id) {
+    const content = contents.find(item => item.id === id);
+    if (content) {
+      const newName = prompt('ادخل اسم المحتوى الجديد:', content.name);
+      const newCategory = prompt('ادخل الفئة الجديدة:', content.category);
+      if (newName && newCategory) {
+        content.name = newName;
+        content.category = newCategory;
+        localStorage.setItem('contents', JSON.stringify(contents));
+        renderContents();
+      }
+    }
+  }
+
+  function deleteContent(id) {
+    const index = contents.findIndex(item => item.id === id);
+    if (index !== -1) {
+      if (confirm('هل أنت متأكد من حذف هذا المحتوى؟')) {
+        contents.splice(index, 1);
+        localStorage.setItem('contents', JSON.stringify(contents));
+        renderContents();
+      }
+    }
+  }
+
+  // عرض نافذة إدخال كلمة المرور عند تحميل الصفحة
+  window.onload = function() {
+    document.getElementById('loginModal').style.display = 'flex';
+  };
+</script>
+
+</body>
+</html>

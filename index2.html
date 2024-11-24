@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الشاشة الرئيسية</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background-color: #F7F7F7;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden; /* منع التمرير العام */
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 30px;
+      color: #2C3E50;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    /* إضافة الأيقونة في الزاوية اليمنى */
+    .header .settings-icon {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .container {
+      flex: 1; /* يجعل الإطار يأخذ المساحة المتبقية */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top:-100px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 35px 0;
+      background-color: #F7F7F7;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px; /* تقليص ارتفاع المستطيل */
+      background: linear-gradient(to bottom, #f5f5f5, #e0e0e0);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      z-index: -1;
+    }
+
+    .footer .icon-container {
+      text-align: center;
+      margin: 0 20px;
+    }
+
+    .footer .icon {
+      width: 100px; /* عرض الأيقونات */
+      height: 0px; /* ارتفاع الأيقونات */
+      margin: 0 auto; /* لتوسيط الأيقونة */
+      background-color: white;
+      border-radius: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.0);
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .footer .icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .footer .icon img {
+      width: 50px; /* عرض الصور داخل الأيقونات */
+      height: 50px; /* ارتفاع الصور داخل الأيقونات */
+    }
+
+    .footer p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #34495E;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>'</h1>
+    <!-- أيقونة الإعدادات -->
+    <div class="settings-icon" onclick="window.location.href='indx.html'">
+      ⚙️
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- الإطار لعرض المحتوى -->
+    <iframe id="contentFrame" src="index4.html"></iframe>
+  </div>
+
+  <!-- شريط الأيقونات في أسفل الصفحة -->
+  <div class="footer">
+    <div class="icon-container">
+      <div class="icon" onclick="loadPage('index4.html')">
+        <img src="kkj.png" alt="حسابك">
+      </div>
+      <p>حسابك</p>
+    </div>
+    <div class="icon-container">
+      <div class="icon" onclick="loadPage('index5.html')">
+        <img src="رفع ٠.png" alt="رفع المشاريع">
+      </div>
+      <p>رفع المشاريع</p>
+    </div>
+    <div class="icon-container">
+      <div class="icon" onclick="loadPage('index6.html')">
+        <img src="jjsh.png" alt="استكشاف">
+      </div>
+      <p>استكشاف</p>
+    </div>
+  </div>
+
+  <script>
+    // تغيير محتوى الإطار عند النقر على أيقونة
+    function loadPage(page) {
+      document.getElementById('contentFrame').src = page;
+    }
+  </script>
+
+</body>
+</html>

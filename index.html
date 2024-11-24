@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تطبيق تسجيل الدخول</title>
+  <style>
+    /* إعدادات عامة */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      height: 100vh;
+      margin: 0;
+      background-color: #FDF6E2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* شاشة البداية */
+    .splash-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-image: url('background.jpg'); /* صورة الخلفية ثابتة */
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    /* الصورة الأولى في الأعلى */
+    .splash-screen img.top-img {
+      width: 130px;
+      margin-top: 50px; /* المسافة بين أعلى الصفحة والصورة */
+    }
+
+    /* الصورة الثانية أسفل الصورة الأولى */
+    .splash-screen img.bottom-img {
+      width: 250px;
+      margin-top: 200px; /* المسافة بين الصورة الأولى والصورة الثانية */
+    }
+
+    /* شاشة تسجيل الدخول */
+    .login-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      margin-top: 60px;
+      display: none; /* مخفية بشكل افتراضي */
+    }
+    .login-container h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #4CAF50;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .login-container button:hover {
+      background: #45A049;
+    }
+    .login-container p {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+    .login-container a {
+      color: #A50527;
+      text-decoration: none;
+    }
+    .login-container a:hover {
+      text-decoration: underline;
+    }
+
+    /* شريط الخيارات العلوي */
+    .top-bar {
+      width: 100%;
+      display: none; /* مخفي افتراضيًا */
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+    }
+    .top-bar a {
+      color: #4CAF50;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .top-bar a:hover {
+      text-decoration: underline;
+    }
+
+    /* تغيير اللون عند الضغط على "اتصل بنا" */
+    .top-bar a.contact {
+      color: red;
+    }
+
+    /* نافذة التنبيه */
+    .alert-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      font-size: 16px;
+      z-index: 1000;
+    }
+    .alert-popup button {
+      background-color: #721c24;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
+    }
+    .alert-popup button:hover {
+      background-color: #5a0f12;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- شريط الخيارات العلوي -->
+  <div class="top-bar">
+    <a href="#" id="language-toggle">تغيير اللغة</a>
+    <a href="index8.html" class="contact">اتصل بنا</a> <!-- تم إضافة الرابط لانتقال إلى index8.html -->
+  </div>
+
+  <!-- شاشة البداية -->
+  <div class="splash-screen">
+    <img src="ks.png" alt="شعار التطبيق العلوي" class="top-img"> <!-- الصورة العلوية -->
+    <img src="kj.png" alt="شعار التطبيق السفلي" class="bottom-img"> <!-- الصورة السفلية -->
+  </div>
+
+  <!-- شاشة تسجيل الدخول -->
+  <div class="login-container">
+    <h1>تسجيل الدخول</h1>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+      <input type="password" id="password" placeholder="كلمة المرور" required>
+      <button type="submit">تسجيل الدخول</button>
+    </form>
+    <p>ليس لديك حساب؟ <a href="index1.html">إنشاء حساب جديد</a></p>
+    
+    <!-- روابط سياسة الخصوصية والشروط -->
+    <div class="policy-links">
+      <a href="index3.html">سياسة الخصوصية</a> | 
+      <a href="index3.html">الشروط والأحكام</a>
+    </div>
+  </div>
+
+  <!-- نافذة التنبيه -->
+  <div class="alert-popup" id="alertPopup">
+    <p>البريد الإلكتروني أو كلمة المرور غير صحيحة!</p>
+    <button onclick="closeAlert()">إغلاق</button>
+  </div>
+
+  <script>
+    // التعامل مع شاشة البداية
+    setTimeout(() => {
+      // إخفاء الشعار
+      document.querySelector('.splash-screen').style.opacity = 0;
+      document.querySelector('.splash-screen').style.visibility = 'hidden';
+
+      // إظهار شاشة تسجيل الدخول
+      document.querySelector('.login-container').style.display = 'block';
+
+      // إظهار شريط الخيارات العلوي
+      document.querySelector('.top-bar').style.display = 'flex';
+    }, 2000); // بعد ثانيتين من ظهور الشعار
+
+    // التعامل مع حدث تسجيل الدخول
+    const loginForm = document.getElementById('loginForm');
+
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault(); // منع إعادة تحميل الصفحة عند الضغط على الزر
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const storedEmail = localStorage.getItem('userEmail');
+      const storedPassword = localStorage.getItem('userPassword');
+
+      if (email === storedEmail && password === storedPassword) {
+        window.location.href = 'index2.html';
+      } else {
+        // إظهار نافذة التنبيه
+        document.getElementById('alertPopup').style.display = 'block';
+      }
+    });
+
+    // إغلاق نافذة التنبيه
+    function closeAlert() {
+      document.getElementById('alertPopup').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء حساب جديد</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      height: 100vh;
+      margin: 0;
+      background-color: #FDF6E2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .signup-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 30px;
+      box-shadow: 0 4px 200px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    .signup-container h1 {
+      margin-bottom: 1px;
+      color: #333;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .signup-container input,
+    .signup-container select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .signup-container button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #4CAF50;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .signup-container button:hover {
+      background: #45A049;
+    }
+
+    .signup-container p {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+    .signup-container a {
+      color: #A50527;
+      text-decoration: none;
+    }
+    .signup-container a:hover {
+      text-decoration: underline;
+    }
+
+    /* تعديل صورة الملف الشخصي */
+    .profile-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: block;
+      margin: 0 auto 15px auto;
+      object-fit: cover;
+    }
+
+    .upload-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .upload-btn:hover {
+      background-color: #45A049;
+    }
+
+    /* الرسالة المنبثقة */
+    .message-toast {
+      visibility: hidden;
+      max-width: 300px;
+      height: 50px;
+      margin-left: -150px;
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      border-radius: 2px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+      padding: 16px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      transition: visibility 0s, opacity 0.5s ease-in-out;
+    }
+
+    .message-toast.show {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <!-- شاشة إنشاء الحساب -->
+  <div class="signup-container">
+    <h1>إنشاء حساب جديد</h1>
+
+    <!-- خانة تحميل صورة الملف الشخصي -->
+    <input type="file" id="profile-picture" name="profile-picture" accept="image/*" onchange="previewImage();" style="display: none;">
+    <label for="profile-picture" class="upload-btn">اختار صورة الملف الشخصي</label>
+    <br>
+    <img id="profile-preview" src="#" alt="صورة الملف الشخصي" class="profile-image" style="display: none;">
+
+    <form id="signup-form" onsubmit="return saveData();">
+      <input type="text" id="first-name" name="first-name" placeholder="الاسم الأول" required>
+      <input type="text" id="last-name" name="last-name" placeholder="الاسم الثاني" required>
+      <input type="tel" id="phone" name="phone" placeholder="رقم الهاتف" required>
+      <input type="email" id="email" name="email" placeholder="البريد الإلكتروني" required>
+      <input type="password" id="password" name="password" placeholder="كلمة المرور" required>
+      <input type="password" id="confirm-password" name="confirm-password" placeholder="تأكيد كلمة المرور" required>
+      <button type="submit">إنشاء حساب</button>
+    </form>
+    <p>لديك حساب بالفعل؟ <a href="index.html">تسجيل الدخول</a></p>
+
+    <!-- الرسالة المنبثقة -->
+    <div id="message-toast" class="message-toast">تم إنشاء الحساب بنجاح!</div>
+  </div>
+
+  <script>
+    // دالة للتحقق من صحة البيانات المدخلة
+    function saveData() {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      const phone = document.getElementById('phone').value;
+      const email = document.getElementById('email').value;
+
+      // التحقق من تطابق كلمة المرور
+      if (password !== confirmPassword) {
+        alert("كلمة المرور وتأكيد كلمة المرور غير متطابقتين");
+        return false;
+      }
+
+      // التحقق من صحة رقم الهاتف (9 أرقام فقط)
+      const phonePattern = /^[0-9]{9}$/;
+      if (!phonePattern.test(phone)) {
+        alert("رقم الهاتف يجب أن يكون مكون من 9 أرقام");
+        return false;
+      }
+
+      // التحقق من صحة البريد الإلكتروني
+      const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      if (!emailPattern.test(email)) {
+        alert("البريد الإلكتروني غير صحيح");
+        return false;
+      }
+
+      // تخزين البيانات في localStorage
+      localStorage.setItem('userFirstName', document.getElementById('first-name').value);
+      localStorage.setItem('userLastName', document.getElementById('last-name').value);
+      localStorage.setItem('userPhone', phone);
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userPassword', password);
+
+      // عرض الرسالة المنبثقة
+      var toast = document.getElementById('message-toast');
+      toast.className = "message-toast show";
+      setTimeout(function() { toast.className = toast.className.replace("show", ""); }, 3000);
+
+      // الانتقال إلى صفحة تسجيل الدخول بعد 2 ثانية
+      setTimeout(function() {
+        window.location.href = "index.html";
+      }, 2000);
+
+      return false; // منع إرسال النموذج بشكل تقليدي
+    }
+
+    // دالة لمعاينة صورة الملف الشخصي
+    function previewImage() {
+      const file = document.getElementById('profile-picture').files[0];
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        const preview = document.getElementById('profile-preview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+</body>
+</html>
